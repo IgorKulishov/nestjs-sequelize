@@ -1,4 +1,4 @@
-import {Column, Model, Table, DataType, ForeignKey} from 'sequelize-typescript';
+import {Column, Model, Table, DataType, ForeignKey, BelongsTo} from 'sequelize-typescript';
 import {Product} from "../Products/product.model";
 import {Location} from "../Locations/location.model";
 
@@ -21,4 +21,10 @@ export class ProductVersion extends Model {
     @ForeignKey(() => Product)
     @Column
     productId: string;
+
+    @BelongsTo(() => Product)
+    product: Product;
+
+    @BelongsTo(() => Location)
+    location: Location;
 }

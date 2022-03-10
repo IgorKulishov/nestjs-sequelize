@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Product } from '../Products/product.model';
+import { Location } from '../Locations/location.model';
 import { ProductVersion } from './product-version.model';
 import { Sequelize } from 'sequelize-typescript';
 import { ProductsService } from '../Products/products.service'
+
 import { LocationsService } from '../Locations/locations.service';
 import {Op} from "sequelize";
 
@@ -28,9 +31,19 @@ export class ProductVersionsService {
                     effectiveAt: {
                         [Op.lte]: effectiveAt
                     }
-                }
+                },
+                include: [Location, Product]
             }
-        )
+        ).then((res: any) => {
+            return res.map((productVersionObj: any) => {
+                return {
+                    productVersion: productVersionObj.id,
+                    productName: productVersionObj.product?.name
+                }
+            });
+        }).catch((err: Error) => {
+            console.error(err);
+        })
     }
 
     async createProductVersions(): Promise<void> {
